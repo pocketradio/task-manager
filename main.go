@@ -1,7 +1,27 @@
 package main
 
-import "task-manager/cmd"
+import (
+	"fmt"
+	"os"
+	"path/filepath"
+	"task/cmd"
+	"task/db"
+
+	"github.com/mitchellh/go-homedir"
+)
 
 func main() {
-	cmd.RootCmd.Execute() // rootcmd is the TOP LEVEL
+
+	home, _ := homedir.Dir()
+	dbPath := filepath.Join(home, "tasks.db")
+	must(db.Init(dbPath))
+	must(cmd.RootCmd.Execute()) // rootcmd is the TOP LEVEL
+}
+
+// wrapper func to handle errors.
+func must(err error) {
+	if err != nil {
+		fmt.Println(err.Error())
+		os.Exit(1)
+	}
 }
